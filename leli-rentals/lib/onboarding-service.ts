@@ -1,88 +1,67 @@
-"use client"
+import { createClient } from '@supabase/supabase-js'
 
-// Firebase removed - all imports removed
-
-// Check if Firebase is properly initialized
-const isFirebaseInitialized = () => {
-  return false
-}
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+)
 
 // User onboarding data interface
 export interface UserOnboardingData {
   id: string
-  userId: string
-  userType: 'renter' | 'owner' | 'both'
+  user_id: string
+  user_type: 'renter' | 'owner' | 'both'
   interests: string[]
   location: string
   phone: string
   bio?: string
-  verificationMethod: 'phone' | 'email' | 'id'
-  verificationStatus: 'pending' | 'verified' | 'failed'
-  agreedToTerms: boolean
-  onboardingCompleted: boolean
-  createdAt: any
-  updatedAt: any
+  verification_method: 'phone' | 'email' | 'id'
+  verification_status: 'pending' | 'verified' | 'failed'
+  agreed_to_terms: boolean
+  onboarding_completed: boolean
+  created_at?: string
+  updated_at?: string
 }
 
 // User preferences interface
 export interface UserPreferences {
   id: string
-  userId: string
-  preferredCategories: string[]
-  notificationSettings: {
+  user_id: string
+  preferred_categories: string[]
+  notification_settings: {
     email: boolean
     sms: boolean
     push: boolean
     marketing: boolean
   }
-  privacySettings: {
-    profileVisibility: 'public' | 'private' | 'friends'
-    showEmail: boolean
-    showPhone: boolean
+  privacy_settings: {
+    profile_visibility: 'public' | 'private' | 'friends'
+    show_email: boolean
+    show_phone: boolean
   }
-  createdAt: any
-  updatedAt: any
-}
-
-// User verification data interface
-export interface UserVerification {
-  id: string
-  userId: string
-  method: 'phone' | 'email' | 'id'
-  status: 'pending' | 'verified' | 'failed'
-  verificationCode?: string
-  verificationToken?: string
-  attempts: number
-  lastAttemptAt: any
-  verifiedAt?: any
-  createdAt: any
-  updatedAt: any
+  created_at?: string
+  updated_at?: string
 }
 
 // Onboarding service functions
 export const onboardingService = {
   // Save user onboarding data
   async saveOnboardingData(userId: string, data: Partial<UserOnboardingData>): Promise<void> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
     try {
-      const onboardingRef = doc(db, 'userOnboarding', userId)
-      const onboardingData: Partial<UserOnboardingData> = {
-        id: userId,
-        userId,
-        ...data,
-        updatedAt: serverTimestamp()
-      }
+      const { error } = await supabase
+        .from('user_onboarding')
+        .upsert({
+          user_id: userId,
+          ...data,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
 
-      // If this is the first time saving, set createdAt
-      const existingDoc = await getDoc(onboardingRef)
-      if (!existingDoc.exists()) {
-        onboardingData.createdAt = serverTimestamp()
+      if (error) {
+        console.error('Supabase error saving onboarding data:', error)
+        throw new Error('Failed to save onboarding data')
       }
-
-      await setDoc(onboardingRef, onboardingData, { merge: true })
     } catch (error) {
       console.error('Error saving onboarding data:', error)
       throw new Error('Failed to save onboarding data')
@@ -91,45 +70,63 @@ export const onboardingService = {
 
   // Get user onboarding data
   async getOnboardingData(userId: string): Promise<UserOnboardingData | null> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
     try {
-      const onboardingRef = doc(db, 'userOnboarding', userId)
-      const docSnap = await getDoc(onboardingRef)
-      
-      if (docSnap.exists()) {
-        return docSnap.data() as UserOnboardingData
+      const { data, error } = await supabase
+        .from('user_onboarding')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          // No rows returned, user hasn't started onboarding yet
+          return null
+        }
+        console.error('Supabase error getting onboarding data:', error)
+        throw new Error('Failed to get onboarding data')
       }
-      return null
+
+      return data as UserOnboardingData
     } catch (error) {
       console.error('Error getting onboarding data:', error)
-      throw new Error('Failed to get onboarding data')
+      return null
     }
   },
 
   // Complete onboarding process
   async completeOnboarding(userId: string, finalData: Partial<UserOnboardingData>): Promise<void> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
     try {
-      const onboardingRef = doc(db, 'userOnboarding', userId)
-      await updateDoc(onboardingRef, {
-        ...finalData,
-        onboardingCompleted: true,
-        updatedAt: serverTimestamp()
-      })
+      // Update onboarding data
+      const { error: onboardingError } = await supabase
+        .from('user_onboarding')
+        .upsert({
+          user_id: userId,
+          ...finalData,
+          onboarding_completed: true,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
 
-      // Also update user profile with basic info
-      const userProfileRef = doc(db, 'userProfiles', userId)
-      await updateDoc(userProfileRef, {
-        userType: finalData.userType,
-        phoneNumber: finalData.phone,
-        updatedAt: serverTimestamp()
-      })
+      if (onboardingError) {
+        console.error('Error updating onboarding:', onboardingError)
+        throw new Error('Failed to complete onboarding')
+      }
+
+      // Update user profile with account type
+      const { error: profileError } = await supabase
+        .from('user_profiles')
+        .update({
+          account_type: finalData.user_type,
+          phone_number: finalData.phone,
+          updated_at: new Date().toISOString()
+        })
+        .eq('user_id', userId)
+
+      if (profileError) {
+        console.error('Error updating user profile:', profileError)
+        // Don't throw here, onboarding is still complete
+      }
     } catch (error) {
       console.error('Error completing onboarding:', error)
       throw new Error('Failed to complete onboarding')
@@ -138,25 +135,21 @@ export const onboardingService = {
 
   // Save user preferences
   async saveUserPreferences(userId: string, preferences: Partial<UserPreferences>): Promise<void> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
     try {
-      const preferencesRef = doc(db, 'userPreferences', userId)
-      const preferencesData: Partial<UserPreferences> = {
-        id: userId,
-        userId,
-        ...preferences,
-        updatedAt: serverTimestamp()
-      }
+      const { error } = await supabase
+        .from('user_preferences')
+        .upsert({
+          user_id: userId,
+          ...preferences,
+          updated_at: new Date().toISOString()
+        }, {
+          onConflict: 'user_id'
+        })
 
-      const existingDoc = await getDoc(preferencesRef)
-      if (!existingDoc.exists()) {
-        preferencesData.createdAt = serverTimestamp()
+      if (error) {
+        console.error('Error saving user preferences:', error)
+        throw new Error('Failed to save user preferences')
       }
-
-      await setDoc(preferencesRef, preferencesData, { merge: true })
     } catch (error) {
       console.error('Error saving user preferences:', error)
       throw new Error('Failed to save user preferences')
@@ -165,68 +158,25 @@ export const onboardingService = {
 
   // Get user preferences
   async getUserPreferences(userId: string): Promise<UserPreferences | null> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
     try {
-      const preferencesRef = doc(db, 'userPreferences', userId)
-      const docSnap = await getDoc(preferencesRef)
-      
-      if (docSnap.exists()) {
-        return docSnap.data() as UserPreferences
+      const { data, error } = await supabase
+        .from('user_preferences')
+        .select('*')
+        .eq('user_id', userId)
+        .single()
+
+      if (error) {
+        if (error.code === 'PGRST116') {
+          return null
+        }
+        console.error('Error getting user preferences:', error)
+        throw new Error('Failed to get user preferences')
       }
-      return null
+
+      return data as UserPreferences
     } catch (error) {
       console.error('Error getting user preferences:', error)
-      throw new Error('Failed to get user preferences')
-    }
-  },
-
-  // Save verification data
-  async saveVerificationData(userId: string, verification: Partial<UserVerification>): Promise<void> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
-    try {
-      const verificationRef = doc(db, 'userVerifications', userId)
-      const verificationData: Partial<UserVerification> = {
-        id: userId,
-        userId,
-        ...verification,
-        updatedAt: serverTimestamp()
-      }
-
-      const existingDoc = await getDoc(verificationRef)
-      if (!existingDoc.exists()) {
-        verificationData.createdAt = serverTimestamp()
-      }
-
-      await setDoc(verificationRef, verificationData, { merge: true })
-    } catch (error) {
-      console.error('Error saving verification data:', error)
-      throw new Error('Failed to save verification data')
-    }
-  },
-
-  // Get verification data
-  async getVerificationData(userId: string): Promise<UserVerification | null> {
-    if (!isFirebaseInitialized()) {
-      throw new Error('Firebase is not initialized')
-    }
-
-    try {
-      const verificationRef = doc(db, 'userVerifications', userId)
-      const docSnap = await getDoc(verificationRef)
-      
-      if (docSnap.exists()) {
-        return docSnap.data() as UserVerification
-      }
       return null
-    } catch (error) {
-      console.error('Error getting verification data:', error)
-      throw new Error('Failed to get verification data')
     }
   },
 
@@ -234,7 +184,7 @@ export const onboardingService = {
   async hasCompletedOnboarding(userId: string): Promise<boolean> {
     try {
       const onboardingData = await this.getOnboardingData(userId)
-      return onboardingData?.onboardingCompleted || false
+      return onboardingData?.onboarding_completed || false
     } catch (error) {
       console.error('Error checking onboarding status:', error)
       return false
@@ -250,7 +200,7 @@ export const onboardingService = {
   }> {
     try {
       const onboardingData = await this.getOnboardingData(userId)
-      
+
       if (!onboardingData) {
         return {
           completed: false,
@@ -260,7 +210,7 @@ export const onboardingService = {
         }
       }
 
-      if (onboardingData.onboardingCompleted) {
+      if (onboardingData.onboarding_completed) {
         return {
           completed: true,
           currentStep: 5,
@@ -271,11 +221,11 @@ export const onboardingService = {
 
       // Calculate progress based on completed fields
       let completedSteps = 0
-      if (onboardingData.userType) completedSteps++
+      if (onboardingData.user_type) completedSteps++
       if (onboardingData.interests && onboardingData.interests.length > 0) completedSteps++
       if (onboardingData.location && onboardingData.phone) completedSteps++
-      if (onboardingData.verificationMethod) completedSteps++
-      if (onboardingData.agreedToTerms) completedSteps++
+      if (onboardingData.verification_method) completedSteps++
+      if (onboardingData.agreed_to_terms) completedSteps++
 
       return {
         completed: false,
