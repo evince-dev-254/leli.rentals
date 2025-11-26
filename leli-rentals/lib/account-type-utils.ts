@@ -38,7 +38,7 @@ export const getRedirectUrl = (accountType: AccountType): string => {
     case 'renter':
       return '/listings'
     case 'owner':
-      return '/dashboard/owner'
+      return '/dashboard/owner/verification' // Owners must verify first
     default:
       return '/get-started'
   }
