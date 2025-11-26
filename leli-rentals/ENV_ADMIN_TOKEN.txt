@@ -1,0 +1,20 @@
+# ============================================
+# MAIN APP - ADDITIONAL CONFIGURATION
+# ============================================
+# Add this to your existing .env.local in leli-rentals
+# ============================================
+
+# Admin dashboard shared secret (must match admin app)
+# This token is used to authenticate requests from the admin dashboard
+# Make sure this EXACT token is also in your admin app's .env.local
+ADMIN_INTERNAL_TOKEN=super-secret-string
+
+# ============================================
+# INSTRUCTIONS
+# ============================================
+# 1. Open your leli-rentals/.env.local file
+# 2. Add the line above to your existing environment variables
+# 3. Make sure the token matches the one in admin.leli.rentals/.env.local
+# 4. For production, use a strong random token like: cwb6Rj2XlYFIfsKrQIFuG1QjScD85bdYpqGT3dsuV+w=
+# 5. Save the file
+# 6. Restart the dev server if it's running

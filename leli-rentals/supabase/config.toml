@@ -1,0 +1,11 @@
+# Supabase Local Development Configuration
+# This file is used when running Supabase locally with the Supabase CLI
+# Learn more: https://supabase.com/docs/guides/cli/config
+
+[auth.third_party.clerk]
+enabled = true
+domain = "https://exciting-leech-76.clerk.accounts.dev"
+
+# Note: You will still need to configure your Clerk instance for Supabase compatibility
+# See: CLERK_SUPABASE_INTEGRATION_GUIDE.md for complete setup instructions
+

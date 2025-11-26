@@ -1,0 +1,69 @@
+warning: in the working copy of 'app/api/admin/search-user/route.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/api/admin/users/list/route.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/api/admin/verifications/approve/[userId]/route.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/api/admin/verifications/reject/[userId]/route.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/api/verify-documents/route.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/dashboard/owner/verification/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/layout.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/list-item/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/profile/[userId]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/profile/settings/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/sign-in/[[...sign-in]]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/sign-up/[[...sign-up]]/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'app/verification/page.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/apollo-provider.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/email-service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'lib/owner-dashboard-service.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'proxy.ts', LF will be replaced by CRLF the next time Git touches it
+app/admin-panel/page.tsx
+app/admin/analytics/page.tsx
+app/admin/dashboard/page.tsx
+app/admin/page.tsx
+app/admin/verifications/page.tsx
+app/admin/verify-users/page.tsx
+app/api/admin/search-user/route.ts
+app/api/admin/users/list/route.ts
+app/api/admin/verifications/approve/[userId]/route.ts
+app/api/admin/verifications/reject/[userId]/route.ts
+app/api/messages/route.ts
+app/api/owner/activity/route.ts
+app/api/owner/bookings/route.ts
+app/api/owner/listings/route.ts
+app/api/owner/stats/route.ts
+app/api/profile/favorites/route.ts
+app/api/verify-documents/route.ts
+app/contact/page.tsx
+app/dashboard/owner/page.tsx
+app/dashboard/owner/verification/page.tsx
+app/dashboard/page.tsx
+app/forgot-password/page.tsx
+app/get-started/page.tsx
+app/layout.tsx
+app/listings/details/[id]/page.tsx
+app/listings/page.tsx
+app/messages/page.tsx
+app/page.tsx
+app/profile/[userId]/page.tsx
+app/profile/bookings/page.tsx
+app/profile/favorites/page.tsx
+app/profile/listings/page.tsx
+app/profile/page.tsx
+app/profile/security/page.tsx
+app/profile/settings/page.tsx
+app/profile/switch-account/page.tsx
+app/sign-in/[[...sign-in]]/page.tsx
+app/sign-up/[[...sign-up]]/page.tsx
+app/verification/page.tsx
+components/account-type-reminder.tsx
+components/client-layout.tsx
+components/footer.tsx
+components/messaging-app.tsx
+components/verification-banner.tsx
+lib/apollo-provider.tsx
+lib/email-service.ts
+lib/messaging-service.ts
+lib/owner-dashboard-client-service.ts
+lib/redirect-handler.tsx
+lib/user-profile-service.ts
+next.config.mjs
+proxy.ts

@@ -1,0 +1,44 @@
+# ============================================
+# Copy this entire file content
+# Create a new file called ".env.local" in the root folder
+# Paste this content and replace the values
+# ============================================
+
+# SUPABASE DATABASE (REQUIRED for drafts, listings, favorites)
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# SUPABASE SERVICE ROLE KEY (REQUIRED for admin operations - bypasses RLS)
+# Get this from Supabase Dashboard > Settings > API > service_role key
+# WARNING: Keep this secret! Never expose to browser/client code
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# CLERK (You already have these)
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+
+# Admin dashboard shared secret (must match admin app)
+# You can use this value for development, change for production
+ADMIN_INTERNAL_TOKEN=super-secret-string
+
+# GOOGLE MAPS (Optional)
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=your_google_maps_key
+
+# CLOUDINARY (Optional)
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloud_name
+NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET=your_preset
+
+# RESEND (Optional)
+RESEND_API_KEY=re_...
+RESEND_FROM_EMAIL=hello@updates.leli.rentals
+
+# PAYSTACK (Payment Gateway - LIVE MODE)
+# WARNING: These are LIVE keys and will process real payments
+NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY=your_paystack_public_key
+PAYSTACK_SECRET_KEY=your_paystack_secret_key
+
+# M-PESA (Mobile Money Payment)
+NEXT_PUBLIC_MPESA_CONSUMER_KEY=your_mpesa_consumer_key
+NEXT_PUBLIC_MPESA_CONSUMER_SECRET=your_mpesa_consumer_secret
+# Optional: M-Pesa Business Shortcode (default: 174379 for sandbox)
+# NEXT_PUBLIC_MPESA_SHORTCODE=174379

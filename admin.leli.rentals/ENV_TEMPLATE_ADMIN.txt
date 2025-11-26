@@ -1,0 +1,53 @@
+# ============================================
+# ADMIN DASHBOARD ENVIRONMENT VARIABLES
+# ============================================
+# Create a file called ".env.local" in the admin.leli.rentals root folder
+# Copy this content and replace the placeholder values
+# ============================================
+
+# ============================================
+# CLERK AUTHENTICATION (ADMIN PROJECT - SEPARATE KEYS)
+# ============================================
+# 1. Go to https://dashboard.clerk.com/
+# 2. Create a NEW application called "Leli Admin Dashboard"
+# 3. Copy the keys from that NEW project and paste below
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_admin_clerk_publishable_key_here
+CLERK_SECRET_KEY=sk_test_your_admin_clerk_secret_key_here
+
+# ============================================
+# SUPABASE (SAME AS MAIN APP)
+# ============================================
+# Copy these EXACT values from your main app's .env.local
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# SUPABASE SERVICE ROLE KEY (REQUIRED for direct DB access)
+# Get this from Supabase Dashboard > Settings > API > service_role key
+# WARNING: Keep this secret! Never expose to browser/client code
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+
+# ============================================
+# API PROXY CONFIGURATION
+# ============================================
+# Local development - points to main website API
+NEXT_PUBLIC_MAIN_API_URL=http://localhost:3000/api
+
+# Shared secret token for admin → main API authentication
+# This MUST match the ADMIN_INTERNAL_TOKEN in your main app
+# For local dev, you can use this simple value
+# For production, use a strong random string
+ADMIN_INTERNAL_TOKEN=super-secret-string
+
+# Admin dashboard URL
+NEXT_PUBLIC_ADMIN_DASHBOARD_URL=http://localhost:3001
+
+# ============================================
+# INSTRUCTIONS
+# ============================================
+# 1. Replace pk_test_your_admin_clerk_publishable_key_here with your admin Clerk publishable key
+# 2. Replace sk_test_your_admin_clerk_secret_key_here with your admin Clerk secret key
+# 3. Copy Supabase URL and anon key from main app's .env.local
+# 4. Copy Supabase Service Role Key from Supabase Dashboard
+# 5. Ensure ADMIN_INTERNAL_TOKEN matches the token in your main app
+# 6. Save this file as ".env.local" (without quotes)
+# 7. Restart the dev server: npm run dev
